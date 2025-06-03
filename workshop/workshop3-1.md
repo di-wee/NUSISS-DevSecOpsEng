@@ -1,46 +1,50 @@
 # S-DOEA - Workshop 5 - Terraform and Ansible
 
-## Pre-requisites 
-* Digital Ocean Account
+## Pre-requisites
+
+- Digital Ocean Account
 
 ## Terraform (a)
 
 ### Objective
+
 The objective of this workshop is use Terraform’s HCL to write scripts to
 provision Docker containers and a reverse proxy.
 
 ### Setup
+
 For this workshop create a directory call workshop01 in the repository you
 have create in step a. above. All the files for this workshop should be created in
 workshop01 directory.
 
-
 ### Workshop
+
 In this workshop you will automate the provisioning of the following
 infrastructure shown in the following diagram.
-
 
 <br>
 <img style="float: center;" src="./screens/terraform-1.png">
 <br>
 
-
 The infrastructure stack consists of
+
 1. Docker network called bgg-net
 2. Container running MySQL database (bgg-database) inside bgg-net
 3. A specified number of containers running a Nodejs application (bggbackend). These web applications connect to MySQL database. These
-applications are also provisioned inside bgg-net
+   applications are also provisioned inside bgg-net
 4. An instance of Nginx running on a separate server which routes traffic to
-the bgg-backend instances.
+   the bgg-backend instances.
 
 The following are detail description of provisioning each of the resource in the
 stack.
 
 ### Network (bgg-net)
+
 • Create a Docker network called bgg-net. This network will be used for all
 the containers in our application.
 
 ### Database (bgg-database)
+
 • Provision a Docker volume to be used by the database.
 • Use the image chukmunnlee/bgg-database:v3.1 to create the
 bgg-database container
@@ -51,6 +55,7 @@ that inside the container
 • The database should be created inside bgg-net network
 
 ### Application (bgg-backend)
+
 • Create 3 instances of the application using the following image:
 chukmunnlee/bgg-backend:v3
 • Add the following environment variables
@@ -61,12 +66,12 @@ o BGG_DB_HOST set to the application database resource name
 to port bind to
 
 ### Nginx Reverse Proxy
+
 • Provision a Ubuntu server. Use Ubuntu 20.04 x64
 • Add a SSH key to the server so you can SSH into the server
 • Install Nginx and enable the service with the following commands
 o /usr/bin/apt update -y
 o /usr/bin/apt upgrade -y
-
 
 o /usr/bin/apt install nginx -y
 o /usr/bin/systemctl start nginx
@@ -103,6 +108,7 @@ http: {
 }
 
 ```
+
 Hint: this configuration file should be generated from the bgg-backend
 external ports
 • Replace the /etc/nginx/nginx.conf on the reverse proxy with your
@@ -111,8 +117,8 @@ nginx.conf.
 o /usr/sbin/nginx -s reload, or
 o /usr/bin/systemctl restart nginx
 
-
 ### Outputs
+
 Your Terraform script should produce the following artefacts and outputs
 • Reverse proxy IP address
 • List of all the container endpoint in the following format
@@ -120,10 +126,12 @@ Your Terraform script should produce the following artefacts and outputs
 • An empty file call root@<reverse_proxy_ip >
 
 ### Test
+
 Test your deployment by browsing to http://<reverse_proxy_ip>.
 You should see the following
 
 ### Submission
+
 When you have completed this workshop, commit your work to the repository.
 The instructor will clone your repository at the end
 
@@ -131,37 +139,36 @@ The instructor will clone your repository at the end
 <img style="float: center;" src="./screens/terraform-2.png">
 <br>
 
+## Solution
 
-## Solution 
 1. Access your Digital Ocean account.
 
-
-2. Create a Ubuntu Droplet 
+2. Create a Ubuntu Droplet
 
 <br>
 <img style="float: center;" src="./screens/ansible11.png">
 <br>
 
- * Select Singapore as region
- * Select Ubuntu as the server Image v20.04 x64
+- Select Singapore as region
+- Select Ubuntu as the server Image v20.04 x64
 
 <br>
 <img style="float: center;" src="./screens/ansible12.png">
 <br>
 
-* Select cost saving server type (6 USD)
+- Select cost saving server type (6 USD)
 
 <br>
 <img style="float: center;" src="./screens/ansible13.png">
 <br>
 
-* Choose the SSH authentication method and generate a fresh SSH key pair. Click the "New SSH Key" button, then follow the instructions provided on the right-hand side. Paste the contents of the "cat" command into the Digital Ocean text area.
+- Choose the SSH authentication method and generate a fresh SSH key pair. Click the "New SSH Key" button, then follow the instructions provided on the right-hand side. Paste the contents of the "cat" command into the Digital Ocean text area.
 
 <br>
 <img style="float: center;" src="./screens/ansible14.png">
 <br>
 
-* Finalize the droplet
+- Finalize the droplet
 
 <br>
 <img style="float: center;" src="./screens/ansible15.png">
@@ -177,7 +184,7 @@ ssh root@<public ip address>
 <img style="float: center;" src="./screens/ansible16.png">
 <br>
 
-4. Generate the PKI key pair on the logon server 
+4. Generate the PKI key pair on the logon server
 
 ```
 ssh-keygen
@@ -215,12 +222,12 @@ echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://
 sudo apt update && sudo apt install terraform
 ```
 
-
 7. Check the terraform version
 
 ```
 terraform --version
 ```
+
 <br>
 <img style="float: center;" src="./screens/ansible22.png">
 <br>
@@ -234,6 +241,7 @@ https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
 ```
 export DO_PAT=<replace this with the API key>
 ```
+
 <br>
 <img style="float: center;" src="./screens/Screenshot from 2024-04-18 09-29-02.png">
 <br>
@@ -245,16 +253,14 @@ export DO_PAT=<replace this with the API key>
 <img style="float: center;" src="./screens/ansible24.png">
 <br>
 
-
-
 10. Install docker machine binary
 
 To download and install the Docker Machine binary, type:
 
-
 ```
 curl -O "https://gitlab-docker-machine-downloads.s3.amazonaws.com/v0.16.2-gitlab.19/docker-machine-Linux-x86_64"
 ```
+
 The name of the file should be docker-machine-Linux-x86_64. Rename it to docker-machine to make it easier to work with:
 
 ```
@@ -268,6 +274,7 @@ Change the file permission to executable:
 chmod +x docker-machine
 
 ```
+
 Move or copy it to the usr/local/bin directory so that it will be available as a system command.
 
 ```
@@ -299,11 +306,15 @@ docker-machine create \
 <img style="float: center;" src="./screens/ansible25.png">
 <br>
 
-12. Create a working directory for the following terraform project. 
+12. Create a working directory for the following terraform project.
 
 13. Create provider script (provider.tf) for the provisioning of the DO servers
 
 ```
+<!-- Provider is a connector to the resources: Docker/ Digital Ocean/ Local -->
+
+<!-- Bring down the 3 providers/connectors -->
+<!-- Authentication required for the 2 providers (docker/digital ocean) -->
 terraform {
     required_providers {
         docker = {
@@ -320,6 +331,7 @@ terraform {
         }
     }
 }
+
 
 provider docker {
     # host = "unix:///var/run/docker.sock"
@@ -338,6 +350,8 @@ provider local { }
 14. Create the variable script (variables.tf)
 
 ```
+<!-- dockerization not done here -->
+
 variable do_token {
     type = string
     sensitive = true
@@ -353,12 +367,14 @@ variable docker_cert_path {
 }
 
 variable app_namespace {
-    type = string 
+    type = string
     default = "my"
 }
 
 variable database_version {
     type = string
+
+    <!-- pointing to a docker image version eg. DockerHub reusing a docker image version -->
     default = "v3.1"
 }
 
@@ -369,6 +385,7 @@ variable backend_version {
 
 variable backend_instance_count{
     type = number
+    <!-- hardcoded cos requirements state 3 backend server -->
     default = 3
 }
 
@@ -378,7 +395,7 @@ variable do_region {
 }
 
 variable do_image {
-    type = string 
+    type = string
     default = "ubuntu-20-04-x64"
 }
 
@@ -388,7 +405,9 @@ variable do_size {
 }
 
 variable do_ssh_key {
-    type = string 
+    type = string
+
+    <!-- ssh name here is hard-coded -->
     default = "www-1"
 }
 
@@ -397,11 +416,13 @@ variable ssh_private_key {
 }
 ```
 
-
 15. Create the resources script (resources.tf)
 
 ```
+
+<!-- Entire logic of the entire server -->
 # images
+<!-- pull down the db and backend image -->
 resource "docker_image" "bgg-database" {
     name = "chukmunnlee/bgg-database:${var.database_version}"
 }
@@ -411,14 +432,17 @@ resource "docker_image" "bgg-backend" {
 }
 
 # the stack
+<!-- set up network -->
 resource "docker_network" "bgg-net" {
     name = "${var.app_namespace}-bgg-net"
 }
 
+<!-- set up disk space -->
 resource "docker_volume" "data-vol" {
     name = "${var.app_namespace}-data-vol"
 }
 
+<!-- spin off docker container ( a server instance by mutating it to a db) -->
 resource "docker_container" "bgg-database" {
     name = "${var.app_namespace}-bgg-database"
     image = docker_image.bgg-database.image_id
@@ -438,10 +462,12 @@ resource "docker_container" "bgg-database" {
     }
 }
 
+<!-- Creation of the backend -->
 resource "docker_container" "bgg-backend" {
 
     count = var.backend_instance_count
 
+<!-- for loop the entire block 3 times cos the index is 3 -->
     name = "${var.app_namespace}-bgg-backend-${count.index}"
     image = docker_image.bgg-backend.image_id
 
@@ -451,6 +477,7 @@ resource "docker_container" "bgg-backend" {
 
     env = [
         "BGG_DB_USER=root",
+        <!-- will fail compliance when pushed to PROD, password hardcoded in here: -->
         "BGG_DB_PASSWORD=changeit",
         "BGG_DB_HOST=${docker_container.bgg-database.name}",
     ]
@@ -460,6 +487,8 @@ resource "docker_container" "bgg-backend" {
     }
 }
 
+<!-- set up reverse proxy server -->
+<!-- reverse proxy runs on a website server called nginx -->
 resource "local_file" "nginx-conf" {
     filename = "nginx.conf"
     content = templatefile("sample.nginx.conf.tftpl", {
@@ -478,6 +507,7 @@ resource "digitalocean_droplet" "nginx" {
     region = var.do_region
     size = var.do_size
 
+<!-- this server can only be accessed using this ssh key www-1 -->
     ssh_keys = [ data.digitalocean_ssh_key.www-1.id ]
 
     connection {
@@ -487,6 +517,7 @@ resource "digitalocean_droplet" "nginx" {
       host = self.ipv4_address
     }
 
+<!-- ssh in and run the software, run the remote script to install web server -->
     provisioner "remote-exec" {
         inline = [
             "apt update -y",
@@ -568,12 +599,15 @@ export DO_PAT=<your DO personal access token>
 ```
 
 ```
+<!-- input sourcing script -->
+<!-- to validate the correctness of our script (compile) -->
 terraform plan -var "do_token=${DO_PAT}" -var "ssh_private_key=/root/.ssh/id_rsa" -var "docker_host=<docker host ip>" -var "docker_cert_path=/root/.docker/machine/machines/docker-nginx"
 ```
 
 19. Once the provision plan is done, apply the changes to the DO cloud account using the following command. Replace the docker host ip with the docker-nginx public IP address.
 
 ```
+<!-- runnning of script -->
 terraform apply -auto-approve -var "do_token=${DO_PAT}" -var "ssh_private_key=/root/.ssh/id_rsa" -var "docker_host=<docker host ip>" -var "docker_cert_path=/root/.docker/machine/machines/docker-nginx"
 ```
 
@@ -586,4 +620,3 @@ terraform apply -auto-approve -var "do_token=${DO_PAT}" -var "ssh_private_key=/r
 Consider installing these tools to help you estimate cloud costs.
 
 https://www.infracost.io/docs/#quick-start
-
